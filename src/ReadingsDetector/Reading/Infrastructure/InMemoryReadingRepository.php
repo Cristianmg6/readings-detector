@@ -1,9 +1,11 @@
 <?php
 namespace Src\ReadingsDetector\Reading\Infrastructure;
 
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingCount;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingPeriod;
 use Src\ReadingsDetector\Shared\Domain\ValueObject\ClientId;
@@ -31,7 +33,27 @@ class InMemoryReadingRepository implements ReadingRepositoryInterface
         return $collection;
     }
 
-    private function values(): array
+    public function getAnnualMediansByClient() : AnnualMedianByClientCollection
+    {
+        $collection = new AnnualMedianByClientCollection();
+        $sumReadingsClientsArray = array();
+
+        foreach($this->values() as $readingArray){
+            if(!isset($sumReadingsClientsArray[$readingArray['client']])) $sumReadingsClientsArray[$readingArray['client']] = 0;
+            $sumReadingsClientsArray[$readingArray['client']] += (int) $readingArray['reading'];
+        }
+
+        foreach($sumReadingsClientsArray as $clientId => $clientReadingsSum){
+            $collection->add(
+                new ClientId($clientId),
+                new ReadingAnnualMedian($clientReadingsSum / 12)
+            );
+        }
+
+        return $collection;
+    }
+
+    public function values(): array
     {
        return [
             0 => [
