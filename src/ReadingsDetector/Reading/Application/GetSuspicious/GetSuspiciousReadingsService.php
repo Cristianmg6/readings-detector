@@ -7,11 +7,9 @@ use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
 use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualMedianNotFoundException;
-use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
 
 final class GetSuspiciousReadingsService
 {
-    private const SUSPICIOUS_PERCENTAGE_MARGIN = 50;
 
     public function __construct(private ReadingRepositoryInterface $repository){ }
 
@@ -31,17 +29,11 @@ final class GetSuspiciousReadingsService
         /** @var Reading $reading */
         foreach($collection as $reading){
             $median = $annualMediansByClient->getByClientId($reading->clientId());
-            if($this->checkIsSuspicious($reading, $median)){
+            if($reading->isSuspicious($median)){
                 $result->add($reading, $median);
             }
         }
         return $result;
     }
 
-    private function checkIsSuspicious(Reading $reading, ReadingAnnualMedian $annualMedian) : bool
-    {
-        return
-            $reading->count()->value() > $annualMedian->maxMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN) ||
-            $reading->count()->value() < $annualMedian->minMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN);
-    }
 }
