@@ -3,6 +3,8 @@
 namespace Tests\Unit\ReadingsDetector\Reading;
 
 use Mockery\MockInterface;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Tests\TestCase;
 
@@ -16,9 +18,23 @@ class ReadingModuleUnitTestCase extends TestCase
         $this->repository = $this->mock(ReadingRepositoryInterface::class);
     }
 
-    protected function readingRepository(): ReadingRepositoryInterface|MockInterface
+    protected function readingRepository() : ReadingRepositoryInterface|MockInterface
     {
         return $this->repository;
+    }
+
+    protected function shouldGetAllReadings(ReadingCollection $collection) : void
+    {
+        $this->readingRepository()
+            ->shouldReceive('getAll')
+            ->andReturn($collection);
+    }
+
+    protected function shouldGetAnnualMediansByClient(AnnualMedianByClientCollection $annualMedianCollection)
+    {
+        $this->readingRepository()
+            ->shouldReceive('getAnnualMediansByClient')
+            ->andReturn($annualMedianCollection);
     }
 
 }

@@ -13,8 +13,18 @@ final class ReadingCountMother
         return new ReadingCount($period);
     }
 
-    public static function random(): ReadingCount
+    public static function randomWithInterval(int $intervalMin, int $intervalMax): ReadingCount
     {
-        return self::create(IntegerMother::random());
+        return self::create(IntegerMother::between($intervalMin, $intervalMax));
+    }
+
+    public static function randomLessThan(int $count): ReadingCount
+    {
+        return self::create(IntegerMother::lessThan($count));
+    }
+
+    public static function randomMoreThan(int $count): ReadingCount
+    {
+        return self::create(IntegerMother::moreThan($count));
     }
 }

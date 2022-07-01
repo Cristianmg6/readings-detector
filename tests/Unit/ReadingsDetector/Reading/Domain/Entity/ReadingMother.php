@@ -3,18 +3,18 @@
 namespace Tests\Unit\ReadingsDetector\Reading\Domain\Entity;
 
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
-use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ClientIdMother;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ReadingCountMother;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ReadingPeriodMother;
 
 final class ReadingMother
 {
-    public static function random(): Reading
+    public static function randomWithClientAndCountInterval(ClientId $clientId, int $intervalMin, int $intervalMax): Reading
     {
         return new Reading(
-            ClientIdMother::random(),
+            $clientId,
             ReadingPeriodMother::random(),
-            ReadingCountMother::random()
+            ReadingCountMother::randomWithInterval($intervalMin, $intervalMax)
         );
     }
 }
