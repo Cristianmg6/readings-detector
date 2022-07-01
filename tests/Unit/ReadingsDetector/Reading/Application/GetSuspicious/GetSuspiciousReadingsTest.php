@@ -68,8 +68,7 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
 
     private function getRandomReadingsCollection(ClientId $clientId): ReadingCollection
     {
-        $readingsCollection = ReadingCollectionMother::withClientAndInterval(10, $clientId, self::COUNT_MIN_CORRECT, self::COUNT_MAX_CORRECT);
-        return $readingsCollection;
+        return ReadingCollectionMother::withClientAndInterval(10, $clientId, self::COUNT_MIN_CORRECT, self::COUNT_MAX_CORRECT);
     }
 
     private function getAnnualMedianCollection(ClientId $clientId, ReadingAnnualMedian $median): AnnualMedianByClientCollection
