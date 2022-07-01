@@ -4,7 +4,7 @@ namespace Src\ReadingsDetector\Reading\Domain\Entity;
 
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingCount;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingPeriod;
-use Src\ReadingsDetector\Shared\Domain\ValueObject\ClientId;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 
 final class Reading
 {

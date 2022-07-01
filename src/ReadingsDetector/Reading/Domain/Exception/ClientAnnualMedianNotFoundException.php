@@ -3,7 +3,7 @@
 namespace Src\ReadingsDetector\Reading\Domain\Exception;
 
 use Exception;
-use Src\ReadingsDetector\Shared\Domain\ValueObject\ClientId;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 
 class ClientAnnualMedianNotFoundException extends Exception
 {

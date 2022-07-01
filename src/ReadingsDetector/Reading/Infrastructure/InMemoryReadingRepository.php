@@ -8,7 +8,7 @@ use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingCount;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingPeriod;
-use Src\ReadingsDetector\Shared\Domain\ValueObject\ClientId;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 
 class InMemoryReadingRepository implements ReadingRepositoryInterface
 {

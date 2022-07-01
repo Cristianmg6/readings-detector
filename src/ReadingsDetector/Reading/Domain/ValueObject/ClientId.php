@@ -1,6 +1,6 @@
 <?php
 
-namespace Src\ReadingsDetector\Shared\Domain\ValueObject;
+namespace Src\ReadingsDetector\Reading\Domain\ValueObject;
 
 final class ClientId
 {

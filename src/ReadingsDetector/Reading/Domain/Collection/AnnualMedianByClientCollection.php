@@ -4,7 +4,7 @@ namespace Src\ReadingsDetector\Reading\Domain\Collection;
 
 use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualMedianNotFoundException;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
-use Src\ReadingsDetector\Shared\Domain\ValueObject\ClientId;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 
 final class AnnualMedianByClientCollection
 {
