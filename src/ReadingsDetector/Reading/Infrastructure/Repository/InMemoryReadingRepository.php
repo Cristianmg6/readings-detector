@@ -1,5 +1,5 @@
 <?php
-namespace Src\ReadingsDetector\Reading\Infrastructure;
+namespace Src\ReadingsDetector\Reading\Infrastructure\Repository;
 
 use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
