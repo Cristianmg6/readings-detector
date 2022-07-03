@@ -50,6 +50,9 @@
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi"
         ],
+        "detector": [
+            "php artisan suspicious:detector"
+        ],
         "test": [
             "vendor/bin/phpunit --no-coverage"
         ],
