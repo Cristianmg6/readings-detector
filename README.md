@@ -45,14 +45,15 @@ It has been developed according to the following principles:
 * Decoupling
 * Error handling
 * Unit Testing
-* Hexagonal Architecture
 
-### Application layer
+### Hexagonal Architecture
+
+#### Application layer
 * Get Suspicious Readings application service\
 It is responsible for traversing the existing readings in the repository and detecting suspicious ones.\
 It returns SuspiciousReadingsResponse, consisting of a list of suspicious readings and the annual median of that client.
 
-### Domain layer
+#### Domain layer
 The domain layer is distributed in:
 * Collection
 * Contract
@@ -60,7 +61,7 @@ The domain layer is distributed in:
 * Exception
 * ValueObject
 
-### Infrastructure layer
+#### Infrastructure layer
 There is a single implementation of the repository interface, FileReadingRepository.\
 It is responsible for, given the directory of a file, reading it, transforming it into a domain entity and returning it in a collection.\
 It is also helped by a FileManager that validates the existence of the file, the file extension and its subsequent conversion to an array.
