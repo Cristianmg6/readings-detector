@@ -56,7 +56,7 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
     }
 
     /** @test */
-    public function client_annual_mmedian_not_found(): void
+    public function client_annual_median_not_found(): void
     {
         $this->expectException(ClientAnnualMedianNotFoundException::class);
         $clientId = ClientIdMother::random();
@@ -74,7 +74,7 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
     private function getAnnualMedianCollection(ClientId $clientId, ReadingAnnualMedian $median): AnnualMedianByClientCollection
     {
         $annualMedianCollection = new AnnualMedianByClientCollection();
-        $annualMedianCollection->add($clientId, $median);
+        $annualMedianCollection->addAnnualMedianByClientId($clientId, $median);
         return $annualMedianCollection;
     }
 

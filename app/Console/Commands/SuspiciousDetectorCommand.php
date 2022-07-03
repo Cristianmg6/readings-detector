@@ -3,11 +3,9 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use League\Csv\Exception as CsvException;
 use Src\ReadingsDetector\Reading\Application\GetSuspicious\GetSuspiciousReadingsService;
-use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
-use Src\ReadingsDetector\Reading\Infrastructure\Repository\CsvFileReadingRepository;
-use Src\ReadingsDetector\Reading\Infrastructure\Repository\InMemoryReadingRepository;
+use Src\ReadingsDetector\Reading\Domain\Exception\FileException;
+use Src\ReadingsDetector\Reading\Infrastructure\FileRepository\FileReadingRepository;
 use Throwable;
 
 class SuspiciousDetectorCommand extends Command
@@ -23,24 +21,14 @@ class SuspiciousDetectorCommand extends Command
     {
         $nameFile = $this->argument(self::NAME_FILE_ARGUMENT_NAME);
         try{
-            $repository = $this->getRepositoryImplementationByFileArgument($nameFile);
+            $repository = new FileReadingRepository(self::PATH_TO_DATA_FILES.$nameFile);
             $service    = new GetSuspiciousReadingsService($repository);
             $result     = $service->__invoke();
             $this->printResultsTable($result->values());
-        }catch(CsvException $e){
-            $this->info("CSV File Error: ".$e->getMessage());
+        }catch(FileException $e){
+            $this->info($e->getMessage());
         }catch(Throwable $e){
             $this->info($e->getMessage());
-        }
-    }
-
-    /** * @throws CsvException */
-    private function getRepositoryImplementationByFileArgument(?string $nameFile) : ReadingRepositoryInterface
-    {
-        if(null === $nameFile){
-            return new InMemoryReadingRepository();
-        }else{
-            return new CsvFileReadingRepository(self::PATH_TO_DATA_FILES.$nameFile);
         }
     }
 

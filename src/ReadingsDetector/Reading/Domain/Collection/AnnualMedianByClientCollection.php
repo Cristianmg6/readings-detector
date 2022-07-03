@@ -11,7 +11,7 @@ final class AnnualMedianByClientCollection
 
     public function __construct(private array $items = array()){ }
 
-    public function add(ClientId $clientId, ReadingAnnualMedian $median): void
+    public function addAnnualMedianByClientId(ClientId $clientId, ReadingAnnualMedian $median): void
     {
         $this->items[$clientId->value()] = $median;
     }
@@ -19,9 +19,15 @@ final class AnnualMedianByClientCollection
     /** * @throws ClientAnnualMedianNotFoundException */
     public function getByClientId(ClientId $clientId): ReadingAnnualMedian
     {
+        $this->ensureClientIdExists($clientId);
+        return $this->items[$clientId->value()];
+    }
+
+    /** * @throws ClientAnnualMedianNotFoundException */
+    protected function ensureClientIdExists(ClientId $clientId) : void
+    {
         if(!isset($this->items[$clientId->value()])){
             throw ClientAnnualMedianNotFoundException::ofClientId($clientId);
         }
-        return $this->items[$clientId->value()];
     }
 }
