@@ -3,7 +3,9 @@
 namespace Src\ReadingsDetector\Reading\Infrastructure\FileRepository;
 
 use League\Csv\Exception as CsvException;
-use League\Csv\Reader;
+use League\Csv\Reader as CSVReader;
+use Sabre\Xml\LibXMLException;
+use Sabre\Xml\Reader as XMLReader;
 use Src\ReadingsDetector\Reading\Domain\Exception\FileException;
 
 final class ReadingFileManager
@@ -23,22 +25,42 @@ final class ReadingFileManager
                 'csv' => $this->fromCsvFileToArray(),
                 'xml' => $this->fromXmlFileToArray()
             };
-        }catch(CsvException $e){
+        }catch(CsvException | LibXMLException $e){
             throw FileException::fromExternalError($this->filePath, $e->getMessage());
         }
     }
 
-    /** * @throws CsvException */
+    /** * @throws CsvException
+     * @throws FileException
+     */
     private function fromCsvFileToArray() : array
     {
-        $reader = Reader::createFromPath($this->filePath, 'r');
+        $reader = CSVReader::createFromPath($this->filePath, 'r');
         $reader->setHeaderOffset(0);
-        return iterator_to_array($reader, true);
+        $resultArray = iterator_to_array($reader, true);
+        if(empty($resultArray)) throw FileException::failedToArrayConversion($this->filePath);
+        return $resultArray;
     }
 
+    /** * @throws LibXMLException
+     * @throws FileException
+     */
     private function fromXmlFileToArray() : array
     {
-        return [];
+        $resultArray = [];
+        $xml    = file_get_contents($this->filePath);
+        $reader = new XMLReader();
+        $reader->xml($xml);
+        $xmlArray = $reader->parse();
+        foreach($xmlArray['value'] as $xmlItem){
+            $resultArray[] = [
+                'client'  => $xmlItem['attributes']['clientID'],
+                'period'  => $xmlItem['attributes']['period'],
+                'reading' => $xmlItem['value']
+            ];
+        }
+        if(empty($resultArray)) throw FileException::failedToArrayConversion($this->filePath);
+        return $resultArray;
     }
 
     /** * @throws FileException */
@@ -51,7 +73,7 @@ final class ReadingFileManager
     /** * @throws FileException */
     private function getExtensionByFilePath() : string
     {
-        $pathInfo = pathinfo($this->filePath);
+        $pathInfo      = pathinfo($this->filePath);
         $fileExtension = $pathInfo['extension'];
         $this->validateIsAvailableExtension($fileExtension);
         return $fileExtension;
