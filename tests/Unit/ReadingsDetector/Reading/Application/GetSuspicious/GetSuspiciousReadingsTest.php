@@ -10,7 +10,6 @@ use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
 use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualMedianNotFoundException;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
-use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingCount;
 use Tests\Unit\ReadingsDetector\Reading\Domain\Collection\ReadingCollectionMother;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ClientIdMother;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ReadingCountMother;
