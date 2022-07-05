@@ -23,16 +23,14 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
     private const COUNT_MAX_CORRECT = 6000;
     private const SUSPICIOUS_PERCENTAGE_MARGIN = 50;
 
-    private GetSuspiciousReadingsService $service;
 
     protected function setUp() : void
     {
         parent::setUp();
-        $this->service = new GetSuspiciousReadingsService($this->readingRepository());
     }
 
     /** @test */
-    public function get_suspicious_readings(): void
+    public function get_suspicious_readings_by_average(): void
     {
         $clientId = ClientIdMother::random();
 
@@ -49,9 +47,18 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
         $this->shouldGetAnnualAveragesByClient($annualAverageCollection);
 
         $expectedResponse = $this->getSuspiciousReadingsResponse($annualAverage, $incorrectReading1, $incorrectReading2);
-        $result = $this->service->__invoke();
+        $typeString = 'average';
+        $service = new GetSuspiciousReadingsService($this->readingRepository(), $typeString);
+        $result = $service->__invoke();
 
         $this->assertEquals($expectedResponse->values(), $result->values());
+    }
+
+    /** @test */
+    public function get_suspicious_readings_by_median(): void
+    {
+        $this->assertTrue(true);
+        //TODO
     }
 
     /** @test */
