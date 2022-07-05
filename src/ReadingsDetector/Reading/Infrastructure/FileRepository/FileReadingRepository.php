@@ -2,13 +2,13 @@
 
 namespace Src\ReadingsDetector\Reading\Infrastructure\FileRepository;
 
-use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualAverageByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
 use Src\ReadingsDetector\Reading\Domain\Exception\FileException;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
-use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualAverage;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingCount;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingPeriod;
 
@@ -53,9 +53,9 @@ class FileReadingRepository implements ReadingRepositoryInterface
         return $collection;
     }
 
-    public function getAnnualMediansByClient() : AnnualMedianByClientCollection
+    public function getAnnualAveragesByClient() : AnnualAverageByClientCollection
     {
-        $collection = new AnnualMedianByClientCollection();
+        $collection = new AnnualAverageByClientCollection();
         $sumReadingsClientsArray = array();
 
         foreach($this->getArrayValues() as $readingArray){
@@ -64,9 +64,9 @@ class FileReadingRepository implements ReadingRepositoryInterface
         }
 
         foreach($sumReadingsClientsArray as $clientId => $clientReadingsSum){
-            $collection->addAnnualMedianByClientId(
+            $collection->addAnnualAverageByClientId(
                 new ClientId($clientId),
-                new ReadingAnnualMedian($clientReadingsSum / 12)
+                new ReadingAnnualAverage($clientReadingsSum / 12)
             );
         }
 

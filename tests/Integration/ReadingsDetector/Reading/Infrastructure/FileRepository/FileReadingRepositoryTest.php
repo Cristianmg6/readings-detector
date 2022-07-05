@@ -2,7 +2,7 @@
 
 namespace Tests\Integration\ReadingsDetector\Reading\Infrastructure\FileRepository;
 
-use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualAverageByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Exception\FileException;
 use Src\ReadingsDetector\Reading\Infrastructure\FileRepository\FileReadingRepository;
@@ -33,11 +33,11 @@ final class FileReadingRepositoryTest extends TestCase
      * @param string $filePath
      * @test
      */
-    public function get_annual_medians_by_client(string $filePath) : void
+    public function get_annual_averages_by_client(string $filePath) : void
     {
         $repository = new FileReadingRepository($filePath);
-        $result = $repository->getAnnualMediansByClient();
-        $this->assertInstanceOf(AnnualMedianByClientCollection::class, $result);
+        $result = $repository->getAnnualAveragesByClient();
+        $this->assertInstanceOf(AnnualAverageByClientCollection::class, $result);
     }
 
     /** @test */

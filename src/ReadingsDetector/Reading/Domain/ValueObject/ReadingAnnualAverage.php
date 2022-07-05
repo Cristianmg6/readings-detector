@@ -2,23 +2,23 @@
 
 namespace Src\ReadingsDetector\Reading\Domain\ValueObject;
 
-final class ReadingAnnualMedian
+final class ReadingAnnualAverage
 {
-    public function __construct(private int $median){ }
+    public function __construct(private int $average){ }
 
     public function value() : int
     {
-        return $this->median;
+        return $this->average;
     }
 
     public function minMarginByPercentage(int $percentage): int
     {
-        return round($this->median * ((100 - $percentage) / 100));
+        return round($this->average * ((100 - $percentage) / 100));
     }
 
     public function maxMarginByPercentage(int $percentage): int
     {
-        return round($this->median * ((100 + $percentage) / 100));
+        return round($this->average * ((100 + $percentage) / 100));
     }
 
 }

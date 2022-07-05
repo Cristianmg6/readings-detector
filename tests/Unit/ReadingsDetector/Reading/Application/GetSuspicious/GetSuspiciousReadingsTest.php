@@ -4,12 +4,12 @@ namespace Tests\Unit\ReadingsDetector\Reading\Application\GetSuspicious;
 
 use Src\ReadingsDetector\Reading\Application\GetSuspicious\GetSuspiciousReadingsService;
 use Src\ReadingsDetector\Reading\Application\GetSuspicious\SuspiciousReadingsResponse;
-use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualAverageByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
-use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualMedianNotFoundException;
+use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualAverageNotFoundException;
 use Src\ReadingsDetector\Reading\Domain\ValueObject\ClientId;
-use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualMedian;
+use Src\ReadingsDetector\Reading\Domain\ValueObject\ReadingAnnualAverage;
 use Tests\Unit\ReadingsDetector\Reading\Domain\Collection\ReadingCollectionMother;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ClientIdMother;
 use Tests\Unit\ReadingsDetector\Reading\Domain\ValueObject\ReadingCountMother;
@@ -18,7 +18,7 @@ use Tests\Unit\ReadingsDetector\Reading\ReadingModuleUnitTestCase;
 
 class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
 {
-    private const ANNUAL_MEDIAN = 5500;
+    private const ANNUAL_AVERAGE    = 5500;
     private const COUNT_MIN_CORRECT = 5000;
     private const COUNT_MAX_CORRECT = 6000;
     private const SUSPICIOUS_PERCENTAGE_MARGIN = 50;
@@ -36,33 +36,33 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
     {
         $clientId = ClientIdMother::random();
 
-        $annualMedian = new ReadingAnnualMedian(self::ANNUAL_MEDIAN);
-        $annualMedianCollection = $this->getAnnualMedianCollection($clientId, $annualMedian);
+        $annualAverage = new ReadingAnnualAverage(self::ANNUAL_AVERAGE);
+        $annualAverageCollection = $this->getAnnualAverageCollection($clientId, $annualAverage);
 
         $readingsCollection = $this->getRandomReadingsCollection($clientId);
-        $incorrectReading1 = new Reading($clientId, ReadingPeriodMother::random(), ReadingCountMother::create($annualMedian->minMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN) - 1));
-        $incorrectReading2 = new Reading($clientId, ReadingPeriodMother::random(), ReadingCountMother::create($annualMedian->maxMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN) + 1));
+        $incorrectReading1 = new Reading($clientId, ReadingPeriodMother::random(), ReadingCountMother::create($annualAverage->minMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN) - 1));
+        $incorrectReading2 = new Reading($clientId, ReadingPeriodMother::random(), ReadingCountMother::create($annualAverage->maxMarginByPercentage(self::SUSPICIOUS_PERCENTAGE_MARGIN) + 1));
         $readingsCollection->add($incorrectReading1);
         $readingsCollection->add($incorrectReading2);
 
         $this->shouldGetAllReadings($readingsCollection);
-        $this->shouldGetAnnualMediansByClient($annualMedianCollection);
+        $this->shouldGetAnnualAveragesByClient($annualAverageCollection);
 
-        $expectedResponse = $this->getSuspiciousReadingsResponse($annualMedian, $incorrectReading1, $incorrectReading2);
+        $expectedResponse = $this->getSuspiciousReadingsResponse($annualAverage, $incorrectReading1, $incorrectReading2);
         $result = $this->service->__invoke();
 
         $this->assertEquals($expectedResponse->values(), $result->values());
     }
 
     /** @test */
-    public function client_annual_median_not_found(): void
+    public function client_annual_average_not_found(): void
     {
-        $this->expectException(ClientAnnualMedianNotFoundException::class);
+        $this->expectException(ClientAnnualAverageNotFoundException::class);
         $clientId = ClientIdMother::random();
 
-        $annualMedian = new ReadingAnnualMedian(self::ANNUAL_MEDIAN);
-        $annualMedianCollection = $this->getAnnualMedianCollection($clientId, $annualMedian);
-        $annualMedianCollection->getByClientId(ClientIdMother::random());
+        $annualAverage = new ReadingAnnualAverage(self::ANNUAL_AVERAGE);
+        $annualAverageCollection = $this->getAnnualAverageCollection($clientId, $annualAverage);
+        $annualAverageCollection->getByClientId(ClientIdMother::random());
     }
 
     private function getRandomReadingsCollection(ClientId $clientId): ReadingCollection
@@ -70,19 +70,19 @@ class GetSuspiciousReadingsTest extends ReadingModuleUnitTestCase
         return ReadingCollectionMother::withClientAndInterval(10, $clientId, self::COUNT_MIN_CORRECT, self::COUNT_MAX_CORRECT);
     }
 
-    private function getAnnualMedianCollection(ClientId $clientId, ReadingAnnualMedian $median): AnnualMedianByClientCollection
+    private function getAnnualAverageCollection(ClientId $clientId, ReadingAnnualAverage $average): AnnualAverageByClientCollection
     {
-        $annualMedianCollection = new AnnualMedianByClientCollection();
-        $annualMedianCollection->addAnnualMedianByClientId($clientId, $median);
-        return $annualMedianCollection;
+        $annualAverageCollection = new AnnualAverageByClientCollection();
+        $annualAverageCollection->addAnnualAverageByClientId($clientId, $average);
+        return $annualAverageCollection;
     }
 
-    private function getSuspiciousReadingsResponse(ReadingAnnualMedian $annualMedian, ...$readings): SuspiciousReadingsResponse
+    private function getSuspiciousReadingsResponse(ReadingAnnualAverage $annualAverage, ...$readings): SuspiciousReadingsResponse
     {
         $response = new SuspiciousReadingsResponse();
         /** @var Reading $reading */
         foreach($readings as $reading){
-            $response->add($reading, $annualMedian);
+            $response->add($reading, $annualAverage);
         }
         return $response;
     }

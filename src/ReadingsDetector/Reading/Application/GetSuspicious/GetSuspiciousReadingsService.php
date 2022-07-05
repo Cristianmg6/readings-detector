@@ -2,35 +2,35 @@
 
 namespace Src\ReadingsDetector\Reading\Application\GetSuspicious;
 
-use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualAverageByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Src\ReadingsDetector\Reading\Domain\Entity\Reading;
-use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualMedianNotFoundException;
+use Src\ReadingsDetector\Reading\Domain\Exception\ClientAnnualAverageNotFoundException;
 
 final class GetSuspiciousReadingsService
 {
 
     public function __construct(private ReadingRepositoryInterface $repository){ }
 
-    /** * @throws ClientAnnualMedianNotFoundException */
+    /** * @throws ClientAnnualAverageNotFoundException */
     public function __invoke() : SuspiciousReadingsResponse
     {
         $allReadings           = $this->repository->getAll();
-        $annualMediansByClient = $this->repository->getAnnualMediansByClient();
-        return $this->getResponse($allReadings, $annualMediansByClient);
+        $annualAveragesByClient = $this->repository->getAnnualAveragesByClient();
+        return $this->getResponse($allReadings, $annualAveragesByClient);
     }
 
-    /** * @throws ClientAnnualMedianNotFoundException */
+    /** * @throws ClientAnnualAverageNotFoundException */
     private function getResponse(ReadingCollection $collection,
-        AnnualMedianByClientCollection $annualMediansByClient) : SuspiciousReadingsResponse
+        AnnualAverageByClientCollection $annualAveragesByClient) : SuspiciousReadingsResponse
     {
         $result = new SuspiciousReadingsResponse();
         /** @var Reading $reading */
         foreach($collection as $reading){
-            $median = $annualMediansByClient->getByClientId($reading->clientId());
-            if($reading->isSuspicious($median)){
-                $result->add($reading, $median);
+            $average = $annualAveragesByClient->getByClientId($reading->clientId());
+            if($reading->isSuspicious($average)){
+                $result->add($reading, $average);
             }
         }
         return $result;

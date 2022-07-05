@@ -3,7 +3,7 @@
 namespace Tests\Unit\ReadingsDetector\Reading;
 
 use Mockery\MockInterface;
-use Src\ReadingsDetector\Reading\Domain\Collection\AnnualMedianByClientCollection;
+use Src\ReadingsDetector\Reading\Domain\Collection\AnnualAverageByClientCollection;
 use Src\ReadingsDetector\Reading\Domain\Collection\ReadingCollection;
 use Src\ReadingsDetector\Reading\Domain\Contract\ReadingRepositoryInterface;
 use Tests\TestCase;
@@ -30,11 +30,11 @@ class ReadingModuleUnitTestCase extends TestCase
             ->andReturn($collection);
     }
 
-    protected function shouldGetAnnualMediansByClient(AnnualMedianByClientCollection $annualMedianCollection)
+    protected function shouldGetAnnualAveragesByClient(AnnualAverageByClientCollection $annualAverageCollection)
     {
         $this->readingRepository()
-            ->shouldReceive('getAnnualMediansByClient')
-            ->andReturn($annualMedianCollection);
+            ->shouldReceive('getAnnualAveragesByClient')
+            ->andReturn($annualAverageCollection);
     }
 
 }
